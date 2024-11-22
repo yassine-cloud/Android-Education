@@ -44,6 +44,8 @@ public class CourFragment extends Fragment implements CourAdapter.OnCourClickLis
     private CourRepository courRepository;
     private FloatingActionButton fabAdd, fabInstructorCourses;
     private SessionManager sessionManager;
+    private boolean isInstructor = false, hisCours = false;
+
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -97,6 +99,7 @@ public class CourFragment extends Fragment implements CourAdapter.OnCourClickLis
         // RecyclerView setup
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         coursAdapter = new CourAdapter(getContext(), courRepository, requireActivity());
+        coursAdapter.setOnCourClickListener(this);
         recyclerView.setAdapter(coursAdapter);
 
         // Initialize instructors list
@@ -159,10 +162,21 @@ public class CourFragment extends Fragment implements CourAdapter.OnCourClickLis
 
         // FloatingActionButton to show the current instructor's courses
         fabInstructorCourses.setOnClickListener(v -> {
-            String currentInstructor = sessionManager.getUser().getUsername();
-            courRepository.getCoursesByInstructor(currentInstructor).observe(getViewLifecycleOwner(), instructorCourses -> {
-                coursAdapter.submitList(instructorCourses);
-            });
+            if(!hisCours){
+                String currentInstructor = sessionManager.getUser().getUsername();
+                instructorSpinner.setVisibility(View.GONE);
+                courRepository.getCoursesByInstructor(currentInstructor).observe(getViewLifecycleOwner(), instructorCourses -> {
+                    coursAdapter.submitList(instructorCourses);
+                });
+            }
+            else{
+                instructorSpinner.setVisibility(View.VISIBLE);
+                instructorSpinner.setSelection(0);
+                courRepository.getAllCourses().observe(getViewLifecycleOwner(), courses -> {
+                    coursAdapter.submitList(courses);
+                });
+            }
+            hisCours = !hisCours;
         });
 
         return root;

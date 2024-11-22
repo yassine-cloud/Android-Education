@@ -60,6 +60,12 @@ public class CourAdapter extends ListAdapter<Cour, CourAdapter.CourHolder> {
         holder.name.setText(cour.getName());
         holder.instructor.setText("Instructor: " + cour.getInstructor());
         holder.schedule.setText("Schedule: " + cour.getSchedule());
+
+        holder.itemView.setOnClickListener(v -> {
+            if (courClickListener != null) {
+                courClickListener.onCourClick(cour);
+            }
+        });
     }
 
     public void setOnCourClickListener(OnCourClickListener listener) {

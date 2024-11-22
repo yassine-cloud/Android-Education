@@ -1,6 +1,7 @@
 package com.iset.education.adapter;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -100,11 +101,11 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskHolder> {
             dueCalendar.set(Calendar.MILLISECOND, 0);
 
             if (dueCalendar.before(currentCalendar)) {
-                holder.itemView.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.overdue));
+                holder.itemView.setBackgroundTintList(ColorStateList.valueOf(holder.itemView.getContext().getResources().getColor(R.color.overdue)));
             } else if (dueCalendar.equals(currentCalendar)) {
-                holder.itemView.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.due_today));
+                holder.itemView.setBackgroundTintList(ColorStateList.valueOf(holder.itemView.getContext().getResources().getColor(R.color.due_today)));
             } else {
-                holder.itemView.setBackgroundColor(holder.itemView.getContext().getResources().getColor(R.color.upcoming));
+                holder.itemView.setBackgroundTintList(ColorStateList.valueOf(holder.itemView.getContext().getResources().getColor(R.color.upcoming)));
             }
         }
 

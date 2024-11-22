@@ -16,7 +16,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/cour"
+            android:text="@string/cours"
             android:textSize="24sp"
             android:gravity="center"
             android:padding="16dp"
@@ -43,7 +43,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/schedule_e_g_monday_10_00_12_00"
-            android:inputType="text" />
+            android:inputType="text"
+            android:focusable="false"
+            android:clickable="true"/>
 
         <Button
             android:id="@+id/btn_select_pdf"
