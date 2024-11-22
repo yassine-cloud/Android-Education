@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.cours.AddEditCourFragment">
+
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/cour"
+            android:textSize="24sp"
+            android:gravity="center"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp"
+            android:textColor="@color/primary"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/et_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/course_name"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/et_instructor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/instructor_name"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/et_schedule"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/schedule_e_g_monday_10_00_12_00"
+            android:inputType="text" />
+
+        <Button
+            android:id="@+id/btn_select_pdf"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/select_pdf" />
+
+        <Button
+            android:id="@+id/btn_view_pdf"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/view_pdf" />
+
+        <Button
+            android:id="@+id/btn_save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/save_course" />
+    </LinearLayout>
+
+
+</FrameLayout>

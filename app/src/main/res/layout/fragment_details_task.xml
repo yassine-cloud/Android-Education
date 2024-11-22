@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.tasks.DetailsTaskFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+    <!-- Task details (Title, Description) placed at the top -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="top"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_weight="1"
+        android:gravity="center_horizontal">
+
+        <!-- Task Title -->
+        <TextView
+            android:id="@+id/task_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:text="Task Title"
+            android:layout_marginTop="16dp"
+            android:gravity="center_horizontal"/>
+
+        <!-- Task Description -->
+        <TextView
+            android:id="@+id/task_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="Task Description"
+            android:layout_marginTop="8dp"
+            android:gravity="center_horizontal"/>
+    </LinearLayout>
+
+    <!-- Task Due Date and Status will be at the bottom -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_alignParentBottom="true"
+        android:padding="16dp">
+
+        <!-- Task Due Date -->
+        <TextView
+            android:id="@+id/task_due_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="Due Date: YYYY-MM-DD"
+            android:layout_marginTop="8dp"
+            android:gravity="center_horizontal"/>
+
+        <!-- Task Completion Status -->
+        <TextView
+            android:id="@+id/task_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="Status: Pending"
+            android:layout_marginTop="8dp"
+            android:gravity="center_horizontal"/>
+
+        <!-- Buttons for Delete, Mark as Completed, Update -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="24dp">
+
+            <!-- Delete Button -->
+            <Button
+                android:id="@+id/btn_delete_task"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Delete"
+                android:layout_marginEnd="16dp"/>
+
+            <!-- Mark as Completed Button -->
+            <Button
+                android:id="@+id/btn_mark_completed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mark as Completed"
+                android:layout_marginEnd="16dp"/>
+
+            <!-- Update Button -->
+            <Button
+                android:id="@+id/btn_update_task"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Update"/>
+
+        </LinearLayout>
+    </LinearLayout>
+    </LinearLayout>
+
+</FrameLayout>

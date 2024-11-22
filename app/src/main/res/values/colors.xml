@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="colorPrimary">#3498db</color> <!-- Replace with your desired color -->
+    <color name="colorPrimaryDark">#2980b9</color> <!-- Optional for the status bar color -->
+    <color name="colorAccent">#e74c3c</color>
+    <color name="green">#4CAF50</color>
+    <color name="red">#F44336</color>
+    <color name="overdue">#FF0000</color> <!-- Red for overdue tasks -->
+    <color name="due_today">#FFFF00</color> <!-- Yellow for tasks due today -->
+    <color name="upcoming">#008000</color> <!-- Green for upcoming tasks -->
+    <color name="red_light">#F44336</color>
+    <color name="green_light">#4CAF50</color>
+    <color name="gray">#9E9E9E</color>
+    <color name="primary">#3498db</color>"
+
+</resources>

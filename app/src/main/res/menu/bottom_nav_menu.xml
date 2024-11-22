@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/nav_tasks" android:icon="@drawable/ic_tasks" android:title="@string/tasks_f_routes" />
+    <item android:id="@+id/nav_courses" android:icon="@drawable/ic_courses" android:title="@string/courses_f_routes" />
+    <item android:id="@+id/nav_profile" android:icon="@drawable/ic_profile" android:title="@string/profile_f_routes" />
+</menu>
