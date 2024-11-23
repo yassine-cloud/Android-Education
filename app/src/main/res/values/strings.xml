@@ -37,4 +37,11 @@
     <string name="update">Update</string>
     <string name="delete">Delete</string>
     <string name="user_image_desc">User image</string>
+    <string name="users">Users</string>
+    <string name="enseignant">enseignant</string>
+    <string name="etudiants">Etudiants</string>
+    <string name="enseignants">Enseignants</string>
+    <string name="admins">Admins</string>
+    <string name="statistics">Statistics</string>
+    <string name="provoque_admin">Provoque Admin</string>
 </resources>

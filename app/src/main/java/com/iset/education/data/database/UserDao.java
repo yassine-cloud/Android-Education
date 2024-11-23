@@ -29,8 +29,11 @@ public interface UserDao {
     @Query("SELECT * FROM users")
     LiveData<List<User>> getAllUsers();
 
-    @Query("SELECT * FROM users WHERE role = :role")
-    LiveData<List<User>> getUserByRole(String role);
+    @Query("SELECT * FROM users WHERE id != :id")
+    LiveData<List<User>> getAllUsers(int id);
+
+    @Query("SELECT * FROM users WHERE role = :role AND id != :id")
+    LiveData<List<User>> getUserByRole(String role, int id);
 
     @Update
     void update(User user);

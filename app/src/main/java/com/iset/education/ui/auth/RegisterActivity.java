@@ -95,13 +95,59 @@ public class RegisterActivity extends AppCompatActivity {
             binding.usernameInput.setError("Please enter a username");
             return;
         }
+        if(username.length() < 4){
+            binding.usernameInput.setError("Username must be at least 4 characters");
+            return;
+        }
+        if(username.length() > 20){
+            binding.usernameInput.setError("Username must be less than 20 characters");
+            return;
+        }
+        if(username.contains(" ")){
+            binding.usernameInput.setError("Username cannot contain spaces");
+            return;
+        }
+        if(username.contains("@")){
+            binding.usernameInput.setError("Username cannot contain @");
+            return;
+        }
+
+
         if(email.isEmpty()){
             binding.emailInput.setError("Please enter an email");
+            return;
+        }
+        if(!email.contains("@")){
+            binding.emailInput.setError("Please enter a valid email");
+            return;
+        }
+        if(!email.contains(".")){
+            binding.emailInput.setError("Please enter a valid email");
+            return;
+        }
+        if(email.length() > 50){
+            binding.emailInput.setError("Email must be less than 50 characters");
+            return;
+        }
+        if(email.length() < 5){
+            binding.emailInput.setError("Email must be at least 5 characters");
+            return;
+        }
+        if(email.contains(" ")){
+            binding.emailInput.setError("Email cannot contain spaces");
             return;
         }
 
         if(password.isEmpty()){
             binding.passwordInput.setError("Please enter a password");
+            return;
+        }
+        if(password.length() < 8){
+            binding.passwordInput.setError("Password must be at least 8 characters");
+            return;
+        }
+        if(password.contains(" ")){
+            binding.passwordInput.setError("Password cannot contain spaces");
             return;
         }
         if(cPassword.isEmpty()){
@@ -110,10 +156,6 @@ public class RegisterActivity extends AppCompatActivity {
         }
         if(number.isEmpty()){
             binding.phoneInput.setError("Please enter a phone number");
-            return;
-        }
-        if(password.length() < 8){
-            binding.passwordInput.setError("Password must be at least 8 characters");
             return;
         }
 

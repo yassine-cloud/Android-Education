@@ -9,13 +9,19 @@
     <color name="red">#F44336</color>
     <color name="overdue">#FF0000</color> <!-- Red for overdue tasks -->
     <color name="due_today">#FFFF00</color> <!-- Yellow for tasks due today -->
+    <color name="yellow">#FFEB3B</color> <!-- Yellow for tasks due today --><!-- Yellow for tasks due today -->
     <color name="upcoming">#008000</color> <!-- Green for upcoming tasks -->
     <color name="red_light">#F44336</color>
     <color name="green_light">#4CAF50</color>
     <color name="gray">#9E9E9E</color>
     <color name="primary">#3498db</color>
     <color name="admin_color">#D32F2F</color> <!-- Red -->
+    <color name="enseignant_color">#1976D2</color> <!-- Blue -->
     <color name="user_color">#1976D2</color> <!-- Blue -->
+    <color name="etudiant_color">#4CAF50</color> <!-- Green -->
     <color name="dark_gray">#666666</color>
+    <color name="blue_light">#2196F3</color>
+    <color name="amber_light">#FFC107</color>
+    <color name="purple_light">#9C27B0</color>
 
 </resources>

@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.iset.education.R;
+import com.iset.education.ui.admin.UsersFragment;
 
 public class AdminDashboardActivity extends AppCompatActivity {
 
@@ -36,7 +37,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
                 selectedFragment = new TaskFragment();
             }
             if (item.getItemId() == R.id.nav_users) {
-                selectedFragment = new TaskFragment();
+                selectedFragment = new UsersFragment();
             }
             else if (item.getItemId() == R.id.nav_profile) {
                 selectedFragment = new ProfileFragment();

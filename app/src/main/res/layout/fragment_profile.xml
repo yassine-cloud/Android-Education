@@ -62,9 +62,12 @@
                 android:id="@+id/profile_role"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Role: Admin"
+                android:text="Role:"
+                android:background="@drawable/role_background"
+                android:textStyle="bold"
+                android:textColor="@color/white"
                 android:layout_marginBottom="16dp"
-                android:textColor="@color/black" />
+               />
 
 
         </LinearLayout>

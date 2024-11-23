@@ -1,6 +1,7 @@
 package com.iset.education.ui.dashboard;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -103,7 +104,17 @@ public class ProfileFragment extends Fragment {
             username.setText(currentUser.getUsername());
             email.setText("Email: " + currentUser.getEmail());
             phone.setText("Phone: " + currentUser.getPhoneNumber());
-            role.setText("Role: " + currentUser.getRole().toString());
+            role.setText(currentUser.getRole().toString());
+
+            int roleColor = role.getContext().getResources().getColor(R.color.white);
+            if (currentUser.getRole() == UserRole.ENSEIGNANT) {
+                roleColor = role.getContext().getResources().getColor(R.color.enseignant_color);
+            } else if (currentUser.getRole() == UserRole.ETUDIANT) {
+                roleColor = role.getContext().getResources().getColor(R.color.etudiant_color);
+            } else if (currentUser.getRole() == UserRole.ADMIN) {
+                roleColor = role.getContext().getResources().getColor(R.color.admin_color);
+            }
+            role.setBackgroundTintList(ColorStateList.valueOf(roleColor));
 
             // Decode byte array to Bitmap for profile image
             if (currentUser.getImage() != null) {

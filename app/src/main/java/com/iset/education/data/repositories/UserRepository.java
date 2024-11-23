@@ -9,6 +9,7 @@ import com.iset.education.data.database.UserDao;
 import com.iset.education.data.database.UserDatabase;
 import com.iset.education.data.models.User;
 import com.iset.education.utils.BCryptPass;
+import com.iset.education.utils.SessionManager;
 
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -18,9 +19,11 @@ public class UserRepository {
 
     private UserDao userDao;
     private LiveData<List<User>> allUsers;
+    private SessionManager sessionManager;
 
     public UserRepository(Application application) {
         UserDatabase db = UserDatabase.getInstance(application);
+        sessionManager = new SessionManager(application);
         userDao = db.userDao();
         allUsers = userDao.getAllUsers();
     }
@@ -44,7 +47,11 @@ public class UserRepository {
     }
 
     public LiveData<List<User>> getAllUsers() {
-        return allUsers;
+        return userDao.getAllUsers(sessionManager.getUser().getId());
+    }
+
+    public LiveData<List<User>> getAllUsersPlus() {
+        return userDao.getAllUsers();
     }
 
     public User getUserById(int id) {
@@ -52,7 +59,7 @@ public class UserRepository {
     }
 
     public LiveData<List<User>> getUserByRole(String role) {
-        return userDao.getUserByRole(role);
+        return userDao.getUserByRole(role, sessionManager.getUser().getId());
     }
 
     public boolean insert(User user) {
