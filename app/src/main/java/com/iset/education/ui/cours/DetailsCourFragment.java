@@ -30,11 +30,14 @@ import com.iset.education.data.models.Cour;
 import com.iset.education.data.models.User;
 import com.iset.education.data.models.UserRole;
 import com.iset.education.data.repositories.CourRepository;
+import com.iset.education.data.repositories.UserRepository;
 import com.iset.education.utils.SessionManager;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executors;
 
 /**
@@ -48,13 +51,17 @@ public class DetailsCourFragment extends Fragment {
     private User enseignant;
     private boolean isOwner = false;
     private SessionManager sessionManager;
+    private CourRepository courRepository;
+    private UserRepository userRepository;
 
-    public static DetailsCourFragment newInstance(Cour cour, User enseignant) {
+    private List<File> generatedPdfFiles = new ArrayList<>();
+
+
+    public static DetailsCourFragment newInstance(int courId, int enseignantId) {
         DetailsCourFragment fragment = new DetailsCourFragment();
         Bundle args = new Bundle();
-        args.putSerializable("cour", cour);
-        args.putSerializable("enseignant", enseignant);
-        fragment.setArguments(args);
+        args.putInt("courId", courId);
+        args.putInt("enseignantId", enseignantId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -63,8 +70,17 @@ public class DetailsCourFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            cour = (Cour) getArguments().getSerializable("cour");
-            enseignant = (User) getArguments().getSerializable("enseignant");
+            int courId = getArguments().getInt("courId");
+            int enseignantId = getArguments().getInt("enseignantId");
+
+            // Fetch the Cour and User objects from your database/repository
+            courRepository = new CourRepository(requireActivity().getApplication());
+            userRepository = new UserRepository(requireActivity().getApplication());
+
+            Executors.newSingleThreadExecutor().execute(() -> {
+                cour = courRepository.getCourseById(courId); // Implement getCourById
+                enseignant = userRepository.getUserById(enseignantId); // Implement getEnseignantById
+            });
         }
     }
 
@@ -113,29 +129,45 @@ public class DetailsCourFragment extends Fragment {
         // Floating Action Button to view PDF
         fab.setOnClickListener(v -> {
             if (cour.getDocument() != null) {
-
                 try {
-                    File file = File.createTempFile("temp_pdf", ".pdf", getContext().getCacheDir());
-                    FileOutputStream fos = new FileOutputStream(file);
+                    // Create a folder named after the application
+                    File appFolder = new File(
+                            requireContext().getExternalFilesDir(null), // Application-specific external storage directory
+                            "Education" // Replace with your app's name
+                    );
+
+                    if (!appFolder.exists()) {
+                        if (!appFolder.mkdirs()) {
+                            Toast.makeText(getContext(), "Failed to create folder", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    }
+
+                    // Create a file in the folder
+//                    File pdfFile = new File(appFolder, "Document.pdf"); // Replace with desired file name
+                    File pdfFile = new File(appFolder, cour.getName()+"-"+cour.getSchedule()+"-"+cour.getId()+".pdf");
+                    FileOutputStream fos = new FileOutputStream(pdfFile);
                     fos.write(cour.getDocument());
                     fos.close();
 
+                    generatedPdfFiles.add(pdfFile); // Add the generated file to the list
+
                     Uri pdfUri = FileProvider.getUriForFile(
                             getContext(),
-                            getContext().getPackageName() + ".provider",
-                            file);
+                            requireContext().getPackageName() + ".provider",
+                            pdfFile
+                    );
 
-                    Log.d("PDFViewer", "Temporary file path: " + file.getAbsolutePath());
-
+                    // Open the PDF file
                     Intent intent = new Intent(Intent.ACTION_VIEW);
-//            intent.setData(pdfUri);
                     intent.setDataAndType(pdfUri, "application/pdf");
                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-                    startActivity(intent); // force open pdf file
-                }catch (IOException e) {
-                    Toast.makeText(getContext(), "Error displaying PDF", Toast.LENGTH_SHORT).show();
+                    startActivity(intent); // Open PDF
+
+                } catch (IOException e) {
+                    Toast.makeText(getContext(), "Error saving or opening PDF", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
             } else {
@@ -179,7 +211,7 @@ public class DetailsCourFragment extends Fragment {
             Executors.newSingleThreadExecutor().execute(()->{
                 AddEditCourFragment addEditCourFragment = new AddEditCourFragment();
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("cour", cour);
+                bundle.putInt("courId", cour.getId());
                 addEditCourFragment.setArguments(bundle);
 
                 getActivity().runOnUiThread(() -> {
@@ -236,5 +268,21 @@ public class DetailsCourFragment extends Fragment {
 
         // Navigate back to the previous fragment
         requireActivity().getSupportFragmentManager().popBackStack();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        deleteGeneratedFiles(); // Cleanup files on fragment exit
+    }
+
+    private void deleteGeneratedFiles() {
+        for (File file : generatedPdfFiles) {
+            if (file.exists() && !file.delete()) {
+                Log.e("PDF Cleanup", "Failed to delete file: " + file.getAbsolutePath());
+            }
+        }
+        // Clear the list after deletion
+        generatedPdfFiles.clear();
     }
 }

@@ -82,8 +82,8 @@
                 android:id="@+id/btn_delete_task"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Delete"
-                android:layout_marginEnd="16dp"/>
+                android:text="@string/delete"
+                android:layout_marginEnd="8dp"/>
 
             <!-- Mark as Completed Button -->
             <Button
@@ -91,14 +91,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Mark as Completed"
-                android:layout_marginEnd="16dp"/>
+                />
 
             <!-- Update Button -->
             <Button
                 android:id="@+id/btn_update_task"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Update"/>
+                android:text="@string/update"
+                android:layout_marginStart="8dp"/>
 
         </LinearLayout>
     </LinearLayout>

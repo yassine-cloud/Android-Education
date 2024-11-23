@@ -13,6 +13,9 @@
     <color name="red_light">#F44336</color>
     <color name="green_light">#4CAF50</color>
     <color name="gray">#9E9E9E</color>
-    <color name="primary">#3498db</color>"
+    <color name="primary">#3498db</color>
+    <color name="admin_color">#D32F2F</color> <!-- Red -->
+    <color name="user_color">#1976D2</color> <!-- Blue -->
+    <color name="dark_gray">#666666</color>
 
 </resources>

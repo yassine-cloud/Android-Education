@@ -97,6 +97,9 @@ public class TaskFragment extends Fragment implements TaskAdapter.OnTaskClickLis
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         tasksLabel = root.findViewById(R.id.tasks_label);
+        fabAddTask = root.findViewById(R.id.fab_add_task);
+        fabDashboard = root.findViewById(R.id.fab_dashboard);
+        fabToggleStatus = root.findViewById(R.id.fab_toggle_status);
 
         adapter = new TaskAdapter(getContext(), taskRepository, requireActivity());
         recyclerView.setAdapter(adapter);
@@ -117,10 +120,6 @@ public class TaskFragment extends Fragment implements TaskAdapter.OnTaskClickLis
 //                allTasks.observe(getViewLifecycleOwner(), tasks -> adapter.submitList(tasks));
 //        else
 //            adapter.submitList(new ArrayList<>());
-
-        fabAddTask = root.findViewById(R.id.fab_add_task);
-        fabDashboard = root.findViewById(R.id.fab_dashboard);
-        fabToggleStatus = root.findViewById(R.id.fab_toggle_status);
 
         fabAddTask.setOnClickListener(v -> {
             AddEditTaskFragment addEditTaskFragment = new AddEditTaskFragment();
@@ -152,10 +151,12 @@ public class TaskFragment extends Fragment implements TaskAdapter.OnTaskClickLis
             // Show completed tasks
             tasksLabel.setText(R.string.completed_tasks);
             shownTasks = taskRepository.getCompletedTasks(userId);
+            fabToggleStatus.setImageResource(R.drawable.ic_check_circle);
         } else {
             // Show incomplete tasks
             tasksLabel.setText(R.string.pending_tasks);
             shownTasks = taskRepository.getUncompletedTasks(userId);
+            fabToggleStatus.setImageResource(R.drawable.ic_uncheck);
         }
         // Observe changes in shownTasks LiveData
         shownTasks.observe(getViewLifecycleOwner(), tasks -> {

@@ -28,7 +28,8 @@
                 android:src="@drawable/ic_person_placeholder"
                 android:scaleType="centerCrop"
                 android:background="@drawable/circle_background"
-                android:contentDescription="@string/profile_image" />
+                android:contentDescription="@string/profile_image"
+                android:clipToOutline="true"/>
 
 
             <!-- Course Information -->

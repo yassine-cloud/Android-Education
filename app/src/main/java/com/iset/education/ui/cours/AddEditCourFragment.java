@@ -30,7 +30,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Executors;
 
@@ -54,34 +57,17 @@ public class AddEditCourFragment extends Fragment {
     private SimpleDateFormat dateFormat;
     private int currentCourId = -1;
 
+    private List<File> generatedPdfFiles = new ArrayList<>();
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public AddEditCourFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AddEditCourFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static AddEditCourFragment newInstance(String param1, String param2) {
+    public static AddEditCourFragment newInstance(int courId) {
         AddEditCourFragment fragment = new AddEditCourFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putInt("courId", courId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -90,14 +76,15 @@ public class AddEditCourFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-            currentCour = (Cour) getArguments().getSerializable("cour");
-            if (currentCour != null) currentCourId = currentCour.getId();
-
+            currentCourId = getArguments().getInt("courId");
         }
         sessionManager = new SessionManager(requireContext());
         courRepository = new CourRepository(getActivity().getApplication());
+        Executors.newSingleThreadExecutor().execute(() -> {
+            if (currentCourId != -1)
+                currentCour = courRepository.getCourseById(currentCourId);
+        });
+
 
         calendar = Calendar.getInstance();
         dateFormat = new SimpleDateFormat("yyyy-MM-dd, hh:mm a", Locale.getDefault());
@@ -262,7 +249,9 @@ public class AddEditCourFragment extends Fragment {
                 courRepository.update(cour);
             else
                 courRepository.insert(cour);
+
             getActivity().runOnUiThread(() -> {
+                deleteGeneratedFiles(); // delete generated files
                 Toast.makeText(getContext(), "Course saved successfully", Toast.LENGTH_SHORT).show();
                 clearCache();
                 getParentFragmentManager().popBackStack();
@@ -343,41 +332,51 @@ public class AddEditCourFragment extends Fragment {
 //    }
 
     private void viewPdf() {
-        if (documentBytes == null) {
-            Toast.makeText(getContext(), "No PDF attached", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        try {
-//            File file = new File(requireContext().getCacheDir(), "temp.pdf");
-            File file = File.createTempFile("temp_pdf", ".pdf", getContext().getCacheDir());
-            FileOutputStream fos = new FileOutputStream(file);
-            fos.write(documentBytes);
-            fos.close();
+        if (documentBytes != null) {
+            try {
+                // Create a folder named after the application
+                File appFolder = new File(
+                        requireContext().getExternalFilesDir(null), // Application-specific external storage directory
+                        "Education" // Replace with your app's name
+                );
 
-            Uri pdfUri = FileProvider.getUriForFile(
-                    getContext(),
-                    getContext().getPackageName() + ".provider",
-                    file);
+                if (!appFolder.exists()) {
+                    if (!appFolder.mkdirs()) {
+                        Toast.makeText(getContext(), "Failed to create folder", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
 
-            Log.d("PDFViewer", "Temporary file path: " + file.getAbsolutePath());
+                // Create a file in the folder
+//                    File pdfFile = new File(appFolder, "Document.pdf"); // Replace with desired file name
+                File pdfFile = new File(appFolder, "Document-"+(new Date()).getTime()+".pdf");
+                FileOutputStream fos = new FileOutputStream(pdfFile);
+                fos.write(documentBytes);
+                fos.close();
 
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-//            intent.setData(pdfUri);
-            intent.setDataAndType(pdfUri, "application/pdf");
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                // add generated file to the tracking list
+                generatedPdfFiles.add(pdfFile);
 
-            startActivity(intent); // force open pdf file
-//            Intent chooser = Intent.createChooser(intent, "Open PDF with");
-//
-//            if (intent.resolveActivity(requireContext().getPackageManager()) != null) {
-//                startActivity(chooser);
-//            } else {
-//                Toast.makeText(getContext(), "No Application found to open the PDF", Toast.LENGTH_SHORT).show();
-//            }
-        } catch (IOException e) {
-            Toast.makeText(getContext(), "Error displaying PDF", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
+                Uri pdfUri = FileProvider.getUriForFile(
+                        getContext(),
+                        requireContext().getPackageName() + ".provider",
+                        pdfFile
+                );
+
+                // Open the PDF file
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setDataAndType(pdfUri, "application/pdf");
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                startActivity(intent); // Open PDF
+
+            } catch (IOException e) {
+                Toast.makeText(getContext(), "Error saving or opening PDF", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            }
+        } else {
+            Toast.makeText(getContext(), "No document available", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -399,6 +398,22 @@ public class AddEditCourFragment extends Fragment {
             }
         }
         return dir.delete();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        deleteGeneratedFiles(); // Cleanup files on fragment exit
+    }
+
+    private void deleteGeneratedFiles() {
+        for (File file : generatedPdfFiles) {
+            if (file.exists() && !file.delete()) {
+                Log.e("PDF Cleanup", "Failed to delete file: " + file.getAbsolutePath());
+            }
+        }
+        // Clear the list after deletion
+        generatedPdfFiles.clear();
     }
 
 }

@@ -17,8 +17,10 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.iset.education.R;
 import com.iset.education.data.models.User;
+import com.iset.education.data.models.UserRole;
 import com.iset.education.data.repositories.UserRepository;
 import com.iset.education.databinding.ActivityLoginBinding;
+import com.iset.education.ui.dashboard.AdminDashboardActivity;
 import com.iset.education.ui.dashboard.DashboardActivity;
 import com.iset.education.utils.BCryptPass;
 import com.iset.education.utils.SessionManager;
@@ -73,7 +75,12 @@ public class LoginActivity extends AppCompatActivity {
                                             Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
                                             SessionManager sessionManager = new SessionManager(LoginActivity.this);
                                             sessionManager.createSession(user);
-                                            Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+                                            Intent intent;
+                                            if (user.getRole().equals(UserRole.ADMIN)) {
+                                                intent = new Intent(LoginActivity.this, AdminDashboardActivity.class);
+                                            }
+                                            else
+                                                intent = new Intent(LoginActivity.this, DashboardActivity.class);
                                             startActivity(intent);
                                             finish();
                                         });

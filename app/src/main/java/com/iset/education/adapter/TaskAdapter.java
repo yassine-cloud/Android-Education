@@ -108,6 +108,9 @@ public class TaskAdapter extends ListAdapter<Task, TaskAdapter.TaskHolder> {
                 holder.itemView.setBackgroundTintList(ColorStateList.valueOf(holder.itemView.getContext().getResources().getColor(R.color.upcoming)));
             }
         }
+        else {
+            holder.itemView.setBackgroundTintList(ColorStateList.valueOf(holder.itemView.getContext().getResources().getColor(R.color.white)));
+        }
 
 
 

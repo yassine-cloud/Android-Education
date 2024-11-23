@@ -123,4 +123,26 @@
             android:scrollbars="vertical" />
     </LinearLayout>
 
+    <!-- FloatingActionButton for Dashboard -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_dashboard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="16dp"
+        android:contentDescription="Dashboard"
+        android:src="@drawable/ic_dashboard"
+        android:backgroundTint="@android:color/holo_blue_light" />
+
+    <!-- FloatingActionButton for Add Task -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_add_task"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:contentDescription="@string/add_task"
+        android:src="@drawable/ic_add"
+        android:backgroundTint="@android:color/holo_green_light" />
+
 </FrameLayout>

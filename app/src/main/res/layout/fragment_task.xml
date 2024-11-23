@@ -39,25 +39,28 @@
         android:layout_gravity="bottom|start"
         android:layout_margin="16dp"
         android:contentDescription="Dashboard"
-        android:src="@drawable/ic_dashboard" />
+        android:src="@drawable/ic_dashboard"
+        android:backgroundTint="@android:color/holo_blue_light" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_toggle_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center"
+        android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:contentDescription="Toggle Task Status"
-        android:src="@drawable/ic_check_circle" />
+        android:src="@drawable/ic_check_circle"
+        android:backgroundTint="@android:color/holo_red_light" />
 
     <!-- FloatingActionButton for Add Task -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_add_task"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
+        android:layout_gravity="top|end"
+        android:layout_margin="6dp"
         android:contentDescription="@string/add_task"
-        android:src="@drawable/ic_add" />
+        android:src="@drawable/ic_add"
+        android:backgroundTint="@android:color/holo_green_light" />
 
 </FrameLayout>

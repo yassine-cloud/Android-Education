@@ -206,9 +206,9 @@ public class CourFragment extends Fragment implements CourAdapter.OnCourClickLis
         Executors.newSingleThreadExecutor().execute(() -> {
             DetailsCourFragment detailsCourFragment = new DetailsCourFragment();
             Bundle bundle = new Bundle();
-            bundle.putSerializable("cour", cour);
+            bundle.putInt("courId", cour.getId());
             User enseignant = userRepository.getUserByUsername(cour.getInstructor());
-            bundle.putSerializable("enseignant", enseignant);
+            bundle.putInt("enseignantId", enseignant.getId());
             detailsCourFragment.setArguments(bundle);
 
             getActivity().runOnUiThread(() -> {

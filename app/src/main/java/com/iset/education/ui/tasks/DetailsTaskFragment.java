@@ -90,6 +90,14 @@ public class DetailsTaskFragment extends Fragment {
             taskDescription.setText(task.getDescription());
             taskDueDate.setText("Due Date: " + task.getDueDate());
             taskStatus.setText("Status: " + (task.isCompleted() ? "Completed" : "Pending"));
+            btnDeleteTask.setVisibility(View.VISIBLE);
+            btnMarkCompleted.setVisibility(View.VISIBLE);
+            btnUpdateTask.setVisibility(View.VISIBLE);
+            btnMarkCompleted.setText("Mark as " + (task.isCompleted() ? "Pending" : "Completed"));
+        } else {
+            // Handle the case where task is null
+            Toast.makeText(getContext(), "Task not found", Toast.LENGTH_SHORT).show();
+            requireActivity().getSupportFragmentManager().popBackStack();
         }
 
         // Delete Task
@@ -113,6 +121,7 @@ public class DetailsTaskFragment extends Fragment {
                 taskRepository.update(task); // Update task in the database
                 requireActivity().runOnUiThread(() -> {
                     taskStatus.setText("Status: " + (task.isCompleted() ? "Completed" : "Pending"));
+                    btnMarkCompleted.setText("Mark as " + (task.isCompleted() ? "Pending" : "Completed"));
                     Toast.makeText(getContext(), "Task status updated", Toast.LENGTH_SHORT).show();
                 });
             }).start();

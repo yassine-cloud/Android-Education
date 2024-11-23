@@ -4,6 +4,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="tasks_f_routes">Tasks</string>
     <string name="courses_f_routes">Courses</string>
+    <string name="users_f_routes">Users</string>
     <string name="profile_f_routes">Profile</string>
     <string name="task_title">Task Title</string>
     <string name="task_description">Task Description</string>
@@ -33,4 +34,7 @@
     <string name="select_pdf">Select PDF</string>
     <string name="view_pdf">View PDF</string>
     <string name="save_course">Save Course</string>
+    <string name="update">Update</string>
+    <string name="delete">Delete</string>
+    <string name="user_image_desc">User image</string>
 </resources>

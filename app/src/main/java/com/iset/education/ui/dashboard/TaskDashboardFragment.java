@@ -11,9 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.iset.education.R;
 import com.iset.education.adapter.TaskAdapter;
 import com.iset.education.data.repositories.TaskRepository;
+import com.iset.education.ui.tasks.AddEditTaskFragment;
 import com.iset.education.utils.SessionManager;
 
 /**
@@ -27,6 +29,7 @@ public class TaskDashboardFragment extends Fragment {
     private TaskRepository taskRepository;
     private TextView textCompletedCount, textPendingCount;
     private SessionManager sessionManager;
+    private FloatingActionButton fabDashboard, fabAddTask;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -81,6 +84,8 @@ public class TaskDashboardFragment extends Fragment {
         recyclerPendingTasks = root.findViewById(R.id.recycler_pending_tasks);
         textCompletedCount = root.findViewById(R.id.text_completed_count);
         textPendingCount = root.findViewById(R.id.text_pending_count);
+        fabDashboard = root.findViewById(R.id.fab_dashboard);
+        fabAddTask = root.findViewById(R.id.fab_add_task);
 
         // Initialize adapters
         completedTasksAdapter = new TaskAdapter(null, taskRepository, requireActivity());
@@ -106,6 +111,20 @@ public class TaskDashboardFragment extends Fragment {
         taskRepository.getUncompletedTasks(userId).observe(getViewLifecycleOwner(), tasks -> {
             pendingTasksAdapter.submitList(tasks);
             textPendingCount.setText(String.valueOf(tasks.size()));
+        });
+
+        fabDashboard.setOnClickListener(v -> {
+            requireActivity().getSupportFragmentManager().popBackStack();
+        });
+
+        fabAddTask.setOnClickListener(v -> {
+            AddEditTaskFragment addEditTaskFragment = new AddEditTaskFragment();
+            requireActivity().getSupportFragmentManager().popBackStack();
+            requireActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, addEditTaskFragment)
+                    .addToBackStack(null)
+                    .commit();
+
         });
 
         return root;

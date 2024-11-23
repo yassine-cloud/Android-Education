@@ -72,21 +72,6 @@ public class CourAdapter extends ListAdapter<Cour, CourAdapter.CourHolder> {
         this.courClickListener = listener;
     }
 
-    private void navigateToCourDetails(Cour cour) {
-        // Create a new instance of DetailsCourFragment
-        DetailsCourFragment detailsCourFragment = new DetailsCourFragment();
-
-        // Pass cour data to the fragment
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("cour", cour);  // Pass the cour object to the fragment
-        detailsCourFragment.setArguments(bundle);
-
-        FragmentTransaction transaction = requireActivity.getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, detailsCourFragment);  // Replace with your container's ID
-        transaction.addToBackStack(null);  // Allows the user to press back to return to the previous fragment
-        transaction.commit();
-    }
-
 
     class CourHolder extends RecyclerView.ViewHolder {
         TextView name, instructor, schedule;
