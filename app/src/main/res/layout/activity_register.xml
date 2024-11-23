@@ -82,6 +82,17 @@
                 android:padding="12dp"
                 android:layout_marginBottom="16dp" />
 
+            <!-- Phone Number Input -->
+            <EditText
+                android:id="@+id/phoneInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/phone_number"
+                android:inputType="phone"
+                android:background="@drawable/edit_text_border"
+                android:padding="12dp"
+                android:layout_marginBottom="16dp" />
+
             <!-- Password Input -->
             <EditText
                 android:id="@+id/passwordInput"
@@ -104,16 +115,6 @@
                 android:padding="12dp"
                 android:layout_marginBottom="16dp" />
 
-            <!-- Phone Number Input -->
-            <EditText
-                android:id="@+id/phoneInput"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/phone_number"
-                android:inputType="phone"
-                android:background="@drawable/edit_text_border"
-                android:padding="12dp"
-                android:layout_marginBottom="16dp" />
 
             <!-- Role Selector -->
             <Spinner

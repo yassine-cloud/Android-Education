@@ -126,12 +126,53 @@ public class EditProfileFragment extends Fragment {
     }
 
     private void saveUser() {
+
         String email = editTextEmail.getText().toString().trim();
         String phone = editTextPhone.getText().toString().trim();
 
         if (TextUtils.isEmpty(email) || TextUtils.isEmpty(phone)) {
-            Toast.makeText(getContext(), "Please fill all fields", Toast.LENGTH_SHORT).show();
+            editTextEmail.setError("Email and phone number are required");
         } else {
+            if (!email.contains("@")) {
+                editTextEmail.setError("Please enter a valid email");
+                return;
+            }
+            if(!email.contains(".")){
+                editTextEmail.setError("Please enter a valid email");
+                return;
+            }
+            if (email.length() > 50) {
+                editTextEmail.setError("Email must be less than 50 characters");
+                return;
+            }
+            if (email.length() < 5) {
+                editTextEmail.setError("Email must be at least 5 characters");
+                return;
+            }
+            if (email.contains(" ")) {
+                editTextEmail.setError("Email cannot contain spaces");
+                return;
+            }
+
+            // test the number field
+            if(phone.isEmpty()){
+                editTextPhone.setError("Please enter a phone number");
+                return;
+            }
+            if (phone.length() != 8) {
+                editTextPhone.setError("Phone number must be 8 digits");
+                return;
+            }
+            if (phone.contains(" ")) {
+                editTextPhone.setError("Phone number cannot contain spaces");
+            }
+            try {
+                int test = Integer.parseInt(phone);
+            }
+            catch (NumberFormatException e){
+                editTextPhone.setError("Phone number must be a number");
+                return;
+            }
             // Update user object with new values
             user.setEmail(email);
             user.setPhoneNumber(phone);
@@ -153,13 +194,17 @@ public class EditProfileFragment extends Fragment {
 
             if (!editTextNewPassword.getText().toString().isEmpty()) {
                 if (editTextNewPassword.getText().toString().length() < 8) {
-                    Toast.makeText(getContext(), "Password must be at least 8 characters", Toast.LENGTH_SHORT).show();
+                    editTextNewPassword.setError("Password must be at least 8 characters");
+                    return;
+                }
+                if (editTextNewPassword.getText().toString().contains(" ")) {
+                    editTextNewPassword.setError("Password cannot contain spaces");
                     return;
                 }
                 if (editTextNewPassword.getText().toString().equals(editTextConfirmPassword.getText().toString())) {
                     user.setPassword(editTextNewPassword.getText().toString());
                 } else {
-                    Toast.makeText(getContext(), "Passwords do not match", Toast.LENGTH_SHORT).show();
+                    editTextConfirmPassword.setError("Passwords do not match");
                     return;
                 }
             }

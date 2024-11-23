@@ -1,8 +1,12 @@
 package com.iset.education.ui.auth;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,7 +14,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -34,6 +41,7 @@ public class LoginActivity extends AppCompatActivity {
     private ActivityLoginBinding loginBinding;
     private TextView registerRedirectText;
     private UserRepository userRepository;
+    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +49,9 @@ public class LoginActivity extends AppCompatActivity {
         loginBinding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(loginBinding.getRoot());
         userRepository = new UserRepository(getApplication());
+        sessionManager = new SessionManager(LoginActivity.this);
+        checkUserHaveNotificationPermission();
+
 
         usernameInput = loginBinding.usernameInput;
         passwordInput = loginBinding.passwordInput;
@@ -73,7 +84,6 @@ public class LoginActivity extends AppCompatActivity {
                                     else {
                                         runOnUiThread(() -> {
                                             Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
-                                            SessionManager sessionManager = new SessionManager(LoginActivity.this);
                                             sessionManager.createSession(user);
                                             Intent intent;
                                             if (user.getRole().equals(UserRole.ADMIN)) {
@@ -116,5 +126,37 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+    }
+
+    private void checkUserHaveNotificationPermission(){
+        Log.d("MainActivity", "Checking notification permission...");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                Log.d("MainActivity", "Requesting notification permission...");
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.POST_NOTIFICATIONS}, 100);
+            } else {
+                Log.d("MainActivity", "Notification permission already granted.");
+            }
+        } else {
+            Log.d("MainActivity", "Notification permission not required on this Android version.");
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.d("MainActivity", "onRequestPermissionsResult called with requestCode: " + requestCode);
+        if (requestCode == 100) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d("MainActivity", "Notification permission granted.");
+                sessionManager.sendNotification("Permission Granted", "You can now receive notifications.");
+            } else {
+                Log.d("MainActivity", "Notification permission denied.");
+                Toast.makeText(this, "Notifications permission denied.", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }

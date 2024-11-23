@@ -138,6 +138,25 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
+        if(number.isEmpty()){
+            binding.phoneInput.setError("Please enter a phone number");
+            return;
+        }
+        if (number.length() != 8) {
+            binding.phoneInput.setError("Phone number must be 8 digits");
+            return;
+        }
+        if (number.contains(" ")) {
+            binding.phoneInput.setError("Phone number cannot contain spaces");
+        }
+        try {
+            int test = Integer.parseInt(number);
+        }
+        catch (NumberFormatException e){
+            binding.phoneInput.setError("Phone number must be a number");
+            return;
+        }
+
         if(password.isEmpty()){
             binding.passwordInput.setError("Please enter a password");
             return;
@@ -154,10 +173,7 @@ public class RegisterActivity extends AppCompatActivity {
             binding.confirmPasswordInput.setError("Please confirm your password");
             return;
         }
-        if(number.isEmpty()){
-            binding.phoneInput.setError("Please enter a phone number");
-            return;
-        }
+
 
         if(!password.equals(cPassword)){
             binding.confirmPasswordInput.setError("Passwords do not match");

@@ -1,5 +1,6 @@
 package com.iset.education.ui.dashboard;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
@@ -124,7 +125,7 @@ public class ProfileFragment extends Fragment {
         }
 
         // Set button listeners
-        logoutButton.setOnClickListener(v -> logout());
+        logoutButton.setOnClickListener(v -> confirmBeforeLogout());
         editFab.setOnClickListener(v -> navigateToEditProfile());
 
         return root;
@@ -162,5 +163,17 @@ public class ProfileFragment extends Fragment {
         transaction.replace(R.id.fragment_container, editProfileFragment);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    private void confirmBeforeLogout(){
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Logout")
+                .setMessage("Are you sure you want to logout?")
+                .setPositiveButton("Logout", (dialog, which) -> {
+                    logout();
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+
     }
 }
