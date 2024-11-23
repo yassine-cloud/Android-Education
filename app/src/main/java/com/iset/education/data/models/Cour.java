@@ -49,11 +49,11 @@ public class Cour implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Cour cour = (Cour) o;
-        return id == cour.id;
+        return id == cour.id && Objects.equals(name, cour.name) && Objects.equals(instructor, cour.instructor) && Objects.equals(schedule, cour.schedule) && Objects.deepEquals(document, cour.document);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(id);
+        return Objects.hash(id, name, instructor, schedule, Arrays.hashCode(document));
     }
 }

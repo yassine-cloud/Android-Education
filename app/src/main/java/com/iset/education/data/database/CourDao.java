@@ -23,18 +23,18 @@ public interface CourDao {
     @Delete
     void delete(Cour course);
 
-    @Query("SELECT * FROM cours ORDER BY name ASC")
+    @Query("SELECT * FROM cours ORDER BY schedule DESC, name ASC")
     LiveData<List<Cour>> getAllCourses();
 
     @Query("SELECT * FROM cours WHERE id = :courseId")
     Cour getCourseById(int courseId);
 
-    @Query("SELECT * FROM cours WHERE name LIKE '%' || :searchQuery || '%'")
+    @Query("SELECT * FROM cours WHERE name LIKE '%' || :searchQuery || '%' ORDER BY schedule DESC")
     LiveData<List<Cour>> searchCourses(String searchQuery);
 
-    @Query("SELECT * FROM cours WHERE instructor LIKE '%' || :searchQuery || '%'")
+    @Query("SELECT * FROM cours WHERE instructor LIKE '%' || :searchQuery || '%' ORDER BY schedule DESC")
     LiveData<List<Cour>> searchCoursesByInstructor(String searchQuery);
 
-    @Query("SELECT DISTINCT instructor FROM cours ORDER BY instructor ASC")
+    @Query("SELECT DISTINCT instructor FROM cours ORDER BY schedule DESC, instructor ASC")
     LiveData<List<String>> getInstructorNames();
 }

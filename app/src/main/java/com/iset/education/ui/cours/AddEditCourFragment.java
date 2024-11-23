@@ -52,6 +52,7 @@ public class AddEditCourFragment extends Fragment {
 
     private Calendar calendar;
     private SimpleDateFormat dateFormat;
+    private int currentCourId = -1;
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -92,6 +93,7 @@ public class AddEditCourFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
             currentCour = (Cour) getArguments().getSerializable("cour");
+            if (currentCour != null) currentCourId = currentCour.getId();
 
         }
         sessionManager = new SessionManager(requireContext());
@@ -249,13 +251,17 @@ public class AddEditCourFragment extends Fragment {
         }
 
         Cour cour = new Cour();
+        if (currentCour != null) cour.setId(currentCourId);
         cour.setName(name);
         cour.setInstructor(instructor);
         cour.setSchedule(schedule);
         cour.setDocument(documentBytes);
 
         Executors.newSingleThreadExecutor().execute(() -> {
-            courRepository.insert(cour);
+            if (currentCour != null)
+                courRepository.update(cour);
+            else
+                courRepository.insert(cour);
             getActivity().runOnUiThread(() -> {
                 Toast.makeText(getContext(), "Course saved successfully", Toast.LENGTH_SHORT).show();
                 clearCache();

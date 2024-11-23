@@ -20,7 +20,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.iset.education.R;
 import com.iset.education.adapter.CourAdapter;
 import com.iset.education.data.models.Cour;
+import com.iset.education.data.models.User;
+import com.iset.education.data.models.UserRole;
 import com.iset.education.data.repositories.CourRepository;
+import com.iset.education.data.repositories.UserRepository;
 import com.iset.education.ui.cours.AddEditCourFragment;
 import com.iset.education.ui.cours.DetailsCourFragment;
 import com.iset.education.utils.SessionManager;
@@ -42,6 +45,7 @@ public class CourFragment extends Fragment implements CourAdapter.OnCourClickLis
     private Spinner instructorSpinner;
     private List<String> instructors ;
     private CourRepository courRepository;
+    private UserRepository userRepository;
     private FloatingActionButton fabAdd, fabInstructorCourses;
     private SessionManager sessionManager;
     private boolean isInstructor = false, hisCours = false;
@@ -82,13 +86,16 @@ public class CourFragment extends Fragment implements CourAdapter.OnCourClickLis
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         courRepository = new CourRepository(getActivity().getApplication());
+        userRepository = new UserRepository(getActivity().getApplication());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_cour, container, false);
+
         sessionManager = new SessionManager(requireContext());
+        isInstructor = sessionManager.getUser().getRole() == UserRole.ENSEIGNANT || sessionManager.getUser().getRole() == UserRole.ADMIN;
 
         // Set up RecyclerView
         recyclerView = root.findViewById(R.id.recycler_view_cours);
@@ -96,53 +103,34 @@ public class CourFragment extends Fragment implements CourAdapter.OnCourClickLis
         fabAdd = root.findViewById(R.id.fab_add_cours);
         fabInstructorCourses = root.findViewById(R.id.fab_instructor_courses);
 
+        // Hide FABs if the user is not an instructor
+        if (!isInstructor) {
+            fabAdd.setVisibility(View.GONE);
+            fabInstructorCourses.setVisibility(View.GONE);
+        }
+
         // RecyclerView setup
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         coursAdapter = new CourAdapter(getContext(), courRepository, requireActivity());
         coursAdapter.setOnCourClickListener(this);
         recyclerView.setAdapter(coursAdapter);
 
-        // Initialize instructors list
         instructors = new ArrayList<>();
         instructors.add("All Instructors");
 
-        // Fetch courses and instructors
-        courRepository.getAllCourses().observe(getViewLifecycleOwner(), courses -> {
-            if (courses != null) {
-                coursAdapter.submitList(courses);
-            } else {
-                coursAdapter.submitList(new ArrayList<>());
-            }
-        });
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, instructors);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        instructorSpinner.setAdapter(spinnerAdapter);
 
-        courRepository.getInstructors().observe(getViewLifecycleOwner(), instructorList -> {
-            if (instructorList != null) {
-                instructors.addAll(instructorList);
-                // Update spinner adapter when instructors are fetched
-                ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(
-                        getContext(),
-                        android.R.layout.simple_spinner_item,
-                        instructors
-                );
-                spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                instructorSpinner.setAdapter(spinnerAdapter);
-            }
-        });
+        // Load instructors and observe courses
+        loadInstructors();
+        observeCourses();
 
         // Spinner selection listener
         instructorSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedInstructor = instructors.get(position);
-                if (selectedInstructor.equals("All Instructors")) {
-                    courRepository.getAllCourses().observe(getViewLifecycleOwner(), courses -> {
-                        coursAdapter.submitList(courses);
-                    });
-                } else {
-                    courRepository.getCoursesByInstructor(selectedInstructor).observe(getViewLifecycleOwner(), filteredCourses -> {
-                        coursAdapter.submitList(filteredCourses);
-                    });
-                }
+                refreshCourseList();
             }
 
             @Override
@@ -152,47 +140,84 @@ public class CourFragment extends Fragment implements CourAdapter.OnCourClickLis
         });
 
         // FloatingActionButton to add a course
-        fabAdd.setOnClickListener(v -> {
-            AddEditCourFragment addEditCourFragment = new AddEditCourFragment();
-            requireActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, addEditCourFragment)
-                    .addToBackStack(null)
-                    .commit();
-        });
+        fabAdd.setOnClickListener(v -> navigateToAddEditCourFragment());
 
-        // FloatingActionButton to show the current instructor's courses
+        // FAB for showing current instructor's courses
         fabInstructorCourses.setOnClickListener(v -> {
-            if(!hisCours){
-                String currentInstructor = sessionManager.getUser().getUsername();
-                instructorSpinner.setVisibility(View.GONE);
-                courRepository.getCoursesByInstructor(currentInstructor).observe(getViewLifecycleOwner(), instructorCourses -> {
-                    coursAdapter.submitList(instructorCourses);
-                });
-            }
-            else{
-                instructorSpinner.setVisibility(View.VISIBLE);
-                instructorSpinner.setSelection(0);
-                courRepository.getAllCourses().observe(getViewLifecycleOwner(), courses -> {
-                    coursAdapter.submitList(courses);
-                });
-            }
             hisCours = !hisCours;
+            instructorSpinner.setVisibility(hisCours ? View.GONE : View.VISIBLE);
+            refreshCourseList();
         });
 
         return root;
     }
 
+    private void loadInstructors() {
+        courRepository.getInstructors().observe(getViewLifecycleOwner(), instructorList -> {
+            if (instructorList != null) {
+                instructors.clear();
+                instructors.add("All Instructors");
+                instructors.addAll(instructorList);
+                ((ArrayAdapter) instructorSpinner.getAdapter()).notifyDataSetChanged();
+            }
+        });
+    }
+
+    private void observeCourses() {
+        coursList = courRepository.getAllCourses();
+        coursList.observe(getViewLifecycleOwner(), courses -> {
+            if (!hisCours && instructorSpinner.getSelectedItemPosition() == 0) {
+                coursAdapter.submitList(courses);
+            }
+        });
+    }
+
+    private void refreshCourseList() {
+        if (hisCours) {
+            // Show only the current instructor's courses
+            String currentInstructor = sessionManager.getUser().getUsername();
+            courRepository.getCoursesByInstructor(currentInstructor).observe(getViewLifecycleOwner(), instructorCourses -> {
+                coursAdapter.submitList(instructorCourses);
+            });
+        } else if (instructorSpinner.getSelectedItemPosition() > 0) {
+            // Show courses for the selected instructor
+            String selectedInstructor = instructors.get(instructorSpinner.getSelectedItemPosition());
+            courRepository.getCoursesByInstructor(selectedInstructor).observe(getViewLifecycleOwner(), filteredCourses -> {
+                coursAdapter.submitList(filteredCourses);
+            });
+        } else {
+            // Show all courses
+            coursList = courRepository.getAllCourses();
+            coursList.observe(getViewLifecycleOwner(), courses ->
+                    coursAdapter.submitList(courses));
+        }
+    }
+
+    private void navigateToAddEditCourFragment() {
+        AddEditCourFragment addEditCourFragment = new AddEditCourFragment();
+        requireActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, addEditCourFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
     @Override
     public void onCourClick(Cour cour) {
-        // Navigate to DetailsCourFragment
-        DetailsCourFragment detailsCourFragment = new DetailsCourFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("cour", cour);
-        detailsCourFragment.setArguments(bundle);
+        Executors.newSingleThreadExecutor().execute(() -> {
+            DetailsCourFragment detailsCourFragment = new DetailsCourFragment();
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("cour", cour);
+            User enseignant = userRepository.getUserByUsername(cour.getInstructor());
+            bundle.putSerializable("enseignant", enseignant);
+            detailsCourFragment.setArguments(bundle);
 
-        FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, detailsCourFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+            getActivity().runOnUiThread(() -> {
+                FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_container, detailsCourFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            });
+        });
     }
+
 }
