@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Education</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="tasks_f_routes">Tasks</string>
+    <string name="courses_f_routes">Courses</string>
+    <string name="users_f_routes">Users</string>
+    <string name="profile_f_routes">Profile</string>
+    <string name="task_title">Task Title</string>
+    <string name="task_description">Task Description</string>
+    <string name="save_task">Save Task</string>
+    <string name="completed">Completed</string>
+    <string name="due_date">Due Date</string>
+    <string name="add_task">Add Task</string>
+    <string name="completed_tasks">Completed Tasks</string>
+    <string name="pending_tasks">Pending Tasks</string>
+    <string name="profile_image">Profile image</string>
+    <string name="logout">Logout</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="don_t_have_an_account_register_here">Don\'t have an account? Register here</string>
+    <string name="register">Register</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="email">Email</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="cours">Courses</string>
+    <string name="instructor_name">Instructor Name</string>
+    <string name="course_name">Course Name</string>
+    <string name="schedule_e_g_monday_10_00_12_00">Schedule (e.g., Monday, 10:00 - 12:00)</string>
+    <string name="select_pdf">Select PDF</string>
+    <string name="view_pdf">View PDF</string>
+    <string name="save_course">Save Course</string>
+    <string name="update">Update</string>
+    <string name="delete">Delete</string>
+    <string name="user_image_desc">User image</string>
+    <string name="users">Users</string>
+    <string name="enseignant">Instructor</string>
+    <string name="etudiants">Students</string>
+    <string name="enseignants">Instructors</string>
+    <string name="admins">Admins</string>
+    <string name="statistics">Statistics</string>
+    <string name="provoque_admin">Promote Admin</string>
+</resources>
